@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const Tasks = require("./models/TaskModel");
 
 //Initializing Packages
 const app = express();
@@ -31,6 +32,31 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
+
+//Post Request
+app.post("/api/tasks", async (req, res) => {
+  try {
+    // Destructure the details from the request body
+    const { user, title, tag, status } = req.body;
+
+    // Check if the user already exists
+    let existingUser = await Tasks.findOne({ user });
+
+    if (!existingUser) {
+      // If the user doesn't exist, create a new user
+      existingUser = await Tasks.create({ user, tasks: [] });
+    }
+
+    // Add the task details to the user's tasks
+    existingUser.tasks.push({ title, tag, status });
+    await existingUser.save();
+
+    res.status(201).json({ success: true, message: "Task added successfully" });
+  } catch (error) {
+    console.error("Error adding task:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
 
 //Listening to Server
 connectDB().then(() => {
