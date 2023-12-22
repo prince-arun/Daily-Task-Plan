@@ -1,7 +1,25 @@
 import React from "react";
-import { Col, Button, Row, Container, Card } from "react-bootstrap";
+import { Col, Row, Container, Card } from "react-bootstrap";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../config/Config";
+import GoogleButton from "react-google-button";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  //Sign In Function
+  const navigate = useNavigate();
+  const handleGoogle = async (e) => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log(result);
+      localStorage.setItem("token", result.user.accessToken);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      navigate("/home");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="login">
       <Container>
@@ -16,7 +34,7 @@ const Login = () => {
                   </h2>
                   <p className=" mb-5">Login Using Google Account</p>
                   <div className="mb-3">
-                    <Button variant="outline-primary">Google Sign In</Button>{" "}
+                    <GoogleButton onClick={handleGoogle} />
                     <div className="mt-3"></div>
                   </div>
                 </div>
