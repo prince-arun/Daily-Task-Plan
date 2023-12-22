@@ -58,6 +58,27 @@ app.post("/api/tasks", async (req, res) => {
   }
 });
 
+//Get Request
+app.get("/api/tasks/:user", async (req, res) => {
+  try {
+    const user = req.params.user;
+    console.log("Fetching tasks for user:", user);
+
+    // Find the user by their unique identifier
+    const existingUser = await Tasks.findOne({ user });
+
+    if (!existingUser) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    console.log("Tasks for user:", existingUser.tasks);
+
+    // Return the tasks for the user
+    res.status(200).json({ success: true, tasks: existingUser.tasks });
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
 //Listening to Server
 connectDB().then(() => {
   app.listen(PORT, () => {
