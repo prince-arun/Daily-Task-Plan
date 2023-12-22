@@ -5,6 +5,8 @@ import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/Config";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -48,6 +50,25 @@ const Home = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      <section>
+        <Container className="my-4">
+          <Row className="h-100">
+            <Col xs={12} md={4} className="d-flex">
+              {/* Content for the first child */}
+              <div className="w-100 bg-primary p-4">Child 1</div>
+            </Col>
+            <Col xs={12} md={4} className="d-flex">
+              {/* Content for the second child */}
+              <div className="w-100 bg-secondary p-4">Child 2</div>
+            </Col>
+            <Col xs={12} md={4} className="d-flex">
+              {/* Content for the third child */}
+              <div className="w-100 bg-success p-4">Child 3</div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
     </div>
   );
 };
