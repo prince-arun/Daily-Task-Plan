@@ -165,9 +165,13 @@ const Home = () => {
       <section>
         <Container className="my-4">
           <Row className="h-100">
-            <Col xs={12} md={6} className="d-flex">
+            <Col
+              xs={12}
+              md={6}
+              className="d-flex align-items-center justify-content-center"
+            >
               <div
-                className="w-100 bg-primary p-4 h-100"
+                className="w-100 border con_1 p-4 h-100 text-center"
                 style={{ minHeight: "500px" }}
               >
                 {}
@@ -176,7 +180,9 @@ const Home = () => {
                   placement="bottom"
                   overlay={popover}
                 >
-                  <Button variant="success">Create Tasks</Button>
+                  <Button size="lg" variant="success">
+                    Create Tasks
+                  </Button>
                 </OverlayTrigger>
               </div>
             </Col>
