@@ -60,7 +60,6 @@ app.post("/api/tasks", async (req, res) => {
 app.get("/api/tasks/:user", async (req, res) => {
   try {
     const user = req.params.user;
-    console.log("Fetching tasks for user:", user);
 
     // Finding the user by their user value
     const existingUser = await Tasks.findOne({ user });
