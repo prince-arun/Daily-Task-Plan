@@ -67,7 +67,7 @@ const TaskItem = ({ task, user, removeTaskFromContainer2 }) => {
 
   return (
     <div className="task-item">
-      <Card style={{ width: "18rem" }}>
+      <Card className="mt-2" style={{ width: "18rem" }}>
         <Card.Body>
           <Card.Title>{task.title}</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">
@@ -77,7 +77,7 @@ const TaskItem = ({ task, user, removeTaskFromContainer2 }) => {
             {isTimerRunning && <p>Timer: {formatTimer(timer)}</p>}
           </Card.Text>
           <Card.Text>
-            {displayTimePeriod && <p>Time Spend: {task.timePeriod}</p>}
+            {displayTimePeriod && <p>Time Spent: {task.timePeriod}</p>}
           </Card.Text>
           <Card.Link>
             {" "}

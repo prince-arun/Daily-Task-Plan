@@ -187,7 +187,7 @@ const Home = () => {
               </div>
             </Col>
             <Col xs={12} md={6} className="d-flex">
-              <div className="w-100 bg-secondary p-4">
+              <div className="w-100 bg-secondary p-4 text-center">
                 {tasks ? (
                   tasks.map((task) => (
                     <TaskItem
@@ -198,7 +198,7 @@ const Home = () => {
                     />
                   ))
                 ) : (
-                  <p>No tasks available</p>
+                  <p style={{ fontSize: "50px" }}>No tasks available</p>
                 )}
               </div>
             </Col>
