@@ -10,6 +10,7 @@ const app = express();
 dotenv.config();
 
 //Initializing Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded());
@@ -36,18 +37,15 @@ const connectDB = async () => {
 //Post Request
 app.post("/api/tasks", async (req, res) => {
   try {
-    // Destructure the details from the request body
     const { user, title, tag, status } = req.body;
-
-    // Check if the user already exists
     let existingUser = await Tasks.findOne({ user });
 
+    //Checking the user already exists
     if (!existingUser) {
-      // If the user doesn't exist, create a new user
       existingUser = await Tasks.create({ user, tasks: [] });
     }
 
-    // Add the task details to the user's tasks
+    //Adding tasks
     existingUser.tasks.push({ title, tag, status });
     await existingUser.save();
 
@@ -64,21 +62,92 @@ app.get("/api/tasks/:user", async (req, res) => {
     const user = req.params.user;
     console.log("Fetching tasks for user:", user);
 
-    // Find the user by their unique identifier
+    // Finding the user by their user value
     const existingUser = await Tasks.findOne({ user });
 
     if (!existingUser) {
       return res.status(404).json({ success: false, error: "User not found" });
     }
-    console.log("Tasks for user:", existingUser.tasks);
-
-    // Return the tasks for the user
     res.status(200).json({ success: true, tasks: existingUser.tasks });
   } catch (error) {
     console.error("Error fetching tasks:", error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
+
+//Patch Request
+app.patch("/api/tasks/:taskId", async (req, res) => {
+  const userId = req.body.user;
+  const taskId = req.params.taskId;
+  const { timePeriod } = req.body;
+
+  try {
+    const user = await Tasks.findOne({ user: userId });
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    // Finding the particular Task based on task id
+    const taskToUpdate = user.tasks.find(
+      (task) => task._id.toString() === taskId
+    );
+    if (!taskToUpdate) {
+      return res.status(404).json({ success: false, error: "Task not found" });
+    }
+    taskToUpdate.timePeriod = formatTimer(timePeriod);
+    await user.save();
+
+    res.json({ success: true, updatedTask: taskToUpdate });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+//Delete Request
+app.delete("/api/tasks/:taskId", async (req, res) => {
+  const userId = req.body.user;
+  const taskId = req.params.taskId;
+
+  try {
+    const user = await Tasks.findOne({ user: userId });
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    // Finding the Task's index
+    const taskIndex = user.tasks.findIndex(
+      (task) => task._id.toString() === taskId
+    );
+
+    if (taskIndex === -1) {
+      return res.status(404).json({ success: false, error: "Task not found" });
+    }
+
+    // Removing the task from array
+    user.tasks.splice(taskIndex, 1);
+
+    await user.save();
+
+    res.json({ success: true, message: "Task deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+// Function to formate time
+const formatTimer = (seconds) => {
+  const days = Math.floor(seconds / (3600 * 24));
+  const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return `${days}d ${hours}h ${minutes}m ${remainingSeconds}s`;
+};
+
 //Listening to Server
 connectDB().then(() => {
   app.listen(PORT, () => {
