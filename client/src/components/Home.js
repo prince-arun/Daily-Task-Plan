@@ -7,7 +7,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../config/Config";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Card, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import axios from "axios";
@@ -23,7 +23,7 @@ const Home = () => {
   const [status, setStatus] = useState();
   const [tasks, setTasks] = useState();
 
-  //Getting Data From Loal Storage
+  //Getting Data From Local Storage
   const userDetails = JSON.parse(localStorage.getItem("user"));
 
   //Dynamically Storing Google uid
@@ -54,7 +54,6 @@ const Home = () => {
           status,
         })
         .then((res) => {
-          console.log(res.data);
           alert("task added successfully");
           window.location.reload();
         })
@@ -65,7 +64,6 @@ const Home = () => {
   //Get Requests for Getting the tasks
   const fetchTasks = async () => {
     try {
-      console.log("Fetching tasks for user:", user);
       const response = await axios.get(
         `http://localhost:5000/api/tasks/${user}`
       );
